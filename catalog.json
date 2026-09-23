@@ -1,9 +1,4 @@
 {
   "$schema": "./catalog.schema.json",
-  "tools": [
-    {
-      "name": "Bad Name",
-      "by": "nobody"
-    }
-  ]
+  "tools": []
 }

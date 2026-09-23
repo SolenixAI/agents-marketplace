@@ -1,8 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Report a security problem
-    url: https://github.com/SolenixAI/agents-marketplace/security/advisories/new
-    about: Please report vulnerabilities privately, not in a public issue.
   - name: Work with SolenixAI
     url: https://solenix.dev
     about: AI consulting and websites for small businesses.

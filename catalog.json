@@ -1,4 +1,14 @@
 {
   "$schema": "./catalog.schema.json",
-  "tools": []
+  "tools": [
+    {
+      "name": "live-update-test",
+      "by": "solenix",
+      "kind": "skill",
+      "repo": "https://github.com/SolenixAI/agents-marketplace",
+      "description": "Temporary test entry: proves solenix.dev/agents updates live from catalog.json. Removed minutes later.",
+      "license": "Apache-2.0",
+      "install": { "claude": "# test entry, nothing to install" }
+    }
+  ]
 }

@@ -1,0 +1,69 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read # checkout only
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  manifests:
+    name: validate manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: false
+
+      - name: every JSON file parses
+        run: |
+          for f in catalog.json catalog.schema.json .claude-plugin/marketplace.json .agents/plugins/marketplace.json .cursor-plugin/marketplace.json; do
+            jq empty "$f" && echo "ok  $f"
+          done
+
+      - name: catalog.json matches catalog.schema.json
+        run: uvx check-jsonschema --schemafile catalog.schema.json catalog.json
+
+      - name: Claude manifest matches its public schema
+        run: uvx check-jsonschema --schemafile https://json.schemastore.org/claude-code-marketplace.json .claude-plugin/marketplace.json
+
+      - name: all three manifests use the marketplace name "solenix"
+        run: |
+          for f in .claude-plugin/marketplace.json .agents/plugins/marketplace.json .cursor-plugin/marketplace.json; do
+            test "$(jq -r .name "$f")" = solenix || { echo "::error file=$f::name must be solenix"; exit 1; }
+          done
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - name: claude plugin validate
+        run: npx --yes @anthropic-ai/claude-code@2.1.278 plugin validate .
+
+  workflows:
+    name: lint workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: actionlint
+        run: |
+          bash <(curl -sSfL https://raw.githubusercontent.com/rhysd/actionlint/v1.7.12/scripts/download-actionlint.bash) 1.7.12
+          ./actionlint -color
+
+      - name: zizmor
+        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        with:
+          advanced-security: false

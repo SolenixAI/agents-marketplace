@@ -1,5 +1,8 @@
 # Agents Marketplace
 
+[![ci](https://github.com/SolenixAI/agents-marketplace/actions/workflows/ci.yml/badge.svg)](https://github.com/SolenixAI/agents-marketplace/actions/workflows/ci.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/SolenixAI/agents-marketplace/badge)](https://scorecard.dev/viewer/?uri=github.com/SolenixAI/agents-marketplace)
+
 Hand-picked tools for AI agents from [SolenixAI](https://solenix.dev): our own, plus the best of open source.
 
 Each tool installs into your agent with **one line**, and one line removes it. No installer, no background process, nothing left behind.

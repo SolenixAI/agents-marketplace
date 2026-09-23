@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "solenix",
+  "owner": {
+    "name": "SolenixAI",
+    "email": "hello@solenix.dev",
+    "url": "https://solenix.dev"
+  },
+  "description": "Hand-picked agent tools from SolenixAI: ours and the best of open source.",
+  "plugins": []
+}

@@ -1,0 +1,11 @@
+{
+  "name": "solenix",
+  "owner": {
+    "name": "SolenixAI",
+    "email": "hello@solenix.dev"
+  },
+  "metadata": {
+    "description": "Hand-picked agent tools from SolenixAI: ours and the best of open source."
+  },
+  "plugins": []
+}

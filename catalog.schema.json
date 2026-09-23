@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/SolenixAI/agents-marketplace/blob/main/catalog.schema.json",
+  "title": "SolenixAI agents marketplace catalog",
+  "description": "The one list of tools. The plugin manifests and solenix.dev/agents are generated from or checked against it.",
+  "type": "object",
+  "required": ["tools"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "tools": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/tool" }
+    }
+  },
+  "$defs": {
+    "tool": {
+      "type": "object",
+      "required": ["name", "by", "kind", "repo", "description", "license", "install"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "Kebab-case id, unique in this catalog.",
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "by": {
+          "description": "solenix = built by SolenixAI; curated = someone else's open-source tool we picked.",
+          "enum": ["solenix", "curated"]
+        },
+        "kind": { "enum": ["plugin", "skill", "mcp"] },
+        "repo": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "description": { "type": "string", "minLength": 10, "maxLength": 200 },
+        "license": { "description": "SPDX id, e.g. Apache-2.0 or MIT.", "type": "string" },
+        "install": {
+          "description": "One-line install per client. Each tool also needs a matching remove line in its README.",
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "claude": { "type": "string" },
+            "codex": { "type": "string" },
+            "cursor": { "type": "string" },
+            "skills": { "description": "npx skills add ...", "type": "string" },
+            "mcp": { "description": "npx add-mcp ...", "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

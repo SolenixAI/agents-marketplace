@@ -1,0 +1,45 @@
+name: Suggest a tool
+description: Recommend an open-source agent tool for the marketplace.
+labels: [tool-suggestion]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Tool name
+    validations:
+      required: true
+  - type: input
+    id: repo
+    attributes:
+      label: Repo URL
+      placeholder: https://github.com/owner/tool
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What it does
+      description: One or two sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it's good
+      description: What you use it for, and why it beats the alternatives.
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License
+      placeholder: e.g. MIT, Apache-2.0
+    validations:
+      required: true
+  - type: checkboxes
+    id: clean
+    attributes:
+      label: Clean install
+      options:
+        - label: It installs with one line and uninstalls with one line, leaving nothing behind.
+          required: true

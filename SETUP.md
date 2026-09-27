@@ -1,47 +1,43 @@
-# Set up the Solenix toolkit
+# Solenix toolkit
 
-You are an agent. Your human wants the Solenix toolkit installed and working in this environment. Follow these steps in order. Do not skip the checks.
+**Purpose:** the tools SolenixAI agents work with, and how any agent gets each one installed and signed in.
+**Value:** a human pastes one sentence into any agent, and the agent sets itself up. Nobody teaches it anything.
+**Impact:** a fresh agent in Claude Desktop, the ChatGPT app or Hermes Desktop ends with every tool below working, proven by one real call each.
 
-The toolkit is every plugin in [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) (the `solenix` marketplace). Read that file for the current list. Do not rely on a list anywhere else.
+## You are the agent. Do this.
 
-## 1. Install
+For each tool in the table, in order:
 
-Find which of these CLIs exist (`command -v claude codex`) and run the matching line. Each line adds the marketplace, then installs every plugin in it.
+1. **Skip it if you already have it.** If you can already call the tool (an app connector, a plugin or an MCP server), go to step 4. Never install a second copy.
+2. **Add it the first way your environment supports:**
+   - **App connector:** your app has a built-in connector for it (for example Settings → Connectors in Claude, or Apps in ChatGPT). Tell the human which one to turn on.
+   - **Plugin:** your harness installs plugins from a marketplace. Add ours once: `claude plugin marketplace add SolenixAI/agents-marketplace` (Codex: `codex plugin marketplace add SolenixAI/agents-marketplace`). Then install the plugin named in the table, for example `claude plugin install linear@solenix` or `codex plugin add linear@solenix`.
+   - **MCP server:** add the MCP URL from the table to your MCP settings.
+3. **Sign in.** Start the sign-in, and the human approves it in the browser. Never ask for, read or type a password, key or token.
+4. **Prove it.** Make the proof call. If it fails, fix it and try again. If you still can't fix it, tell the human exactly what's blocking.
 
-**Claude Code / Claude Desktop**
+Plugins and MCP servers load when a session starts. If you install something, tell the human to start a new session, then finish from step 3.
 
-```sh
-claude plugin marketplace add SolenixAI/agents-marketplace && curl -fsSL https://raw.githubusercontent.com/SolenixAI/agents-marketplace/main/.agents/plugins/marketplace.json | jq -r '.plugins[].name' | xargs -I{} claude plugin install {}@solenix
-```
+At the end, report one table to the human: tool, how you added it, and the proof call's result or the exact error.
 
-**Codex / ChatGPT app**
+## The toolkit
 
-```sh
-codex plugin marketplace add SolenixAI/agents-marketplace && curl -fsSL https://raw.githubusercontent.com/SolenixAI/agents-marketplace/main/.agents/plugins/marketplace.json | jq -r '.plugins[].name' | xargs -I{} codex plugin add {}@solenix
-```
+| Tool | What we use it for | Plugin | MCP server | Sign in | Proof call |
+|---|---|---|---|---|---|
+| [Linear](https://linear.app) | Plans, issues, projects | `linear@solenix` | `https://mcp.linear.app/mcp` | OAuth | List teams |
+| [GitHub](https://github.com) | Repos, pull requests, Actions | `github@solenix` | `https://api.githubcopilot.com/mcp/` | See below | Get the signed-in user |
+| [Google Workspace](https://github.com/googleworkspace/cli) | Gmail, Calendar, Drive | none | none | See below | List today's calendar events |
+| [Vercel](https://vercel.com) | Deploys, logs, env vars | `vercel@solenix` | `https://mcp.vercel.com` | OAuth | List teams |
+| [Supabase](https://supabase.com) | Database, auth, storage | `supabase@solenix` | `https://mcp.supabase.com/mcp` | OAuth | List organizations |
+| [Stripe](https://stripe.com) | Payments | `stripe@solenix` | `https://mcp.stripe.com` | OAuth (test mode is fine) | Get the balance |
+| [PostHog](https://posthog.com) | Analytics, feature flags, errors | `posthog@solenix` | `https://mcp.posthog.com/mcp` | OAuth | List projects |
+| [Context7](https://context7.com) | Current library docs | `context7@solenix` | `https://mcp.context7.com/mcp` | None | Resolve the library "react" |
+| [Matt Pocock skills](https://github.com/mattpocock/skills) | Grilling, specs, TDD, code review | `mattpocock-skills@solenix` | none | None | Confirm the `grill-me` skill is loaded |
+| [Open Design](https://open-design.ai) | Design before we build | `open-design@solenix` | local, see below | None | List projects |
 
-**Any other agent:** add the marketplace `SolenixAI/agents-marketplace` with your own plugin system, then install every plugin listed in the marketplace file. If your plugin system cannot read a marketplace, install each plugin from the repo in its `source` field.
+### Tools with an extra step
 
-Plugins load when a session starts. Tell the human to start a new session after the install.
-
-## 2. Remove duplicates
-
-If a tool is already installed from somewhere else (another marketplace, a hand-added MCP server, or an app connector), it can load twice or hide the plugin. List what is installed (`claude plugin list`, `claude mcp list`, `codex plugin list`, `codex mcp list`), and ask the human before removing any duplicate.
-
-## 3. Sign in
-
-Most tools need the human to sign in once. You start each sign-in; the human approves it in the browser. Never ask for, read, or type a password, key, or token.
-
-- **Claude:** for each server that `claude mcp list` shows as needing authentication, run `claude mcp login <server>` in an interactive terminal the human can see (or tell them to run `/mcp` in a session).
-- **Codex:** for each server that `codex mcp list` shows without auth, run `codex mcp login <server>`.
-- **App connectors:** if the app has its own connector for the same service (for example Stripe in claude.ai Settings → Connectors) and it is not connected, it hides the plugin. Ask the human to connect it or remove it.
-
-Tools with an extra step:
-
-- **GitHub:** the plugin reads `GITHUB_PERSONAL_ACCESS_TOKEN` from the environment. If the human uses the `gh` CLI, ask them to add `export GITHUB_PERSONAL_ACCESS_TOKEN="$(gh auth token)"` to their shell profile, then restart the app.
-- **Open Design:** needs its local app running. Start it with `od --no-open` and keep it running. If `od` is missing, follow the [Open Design quickstart](https://github.com/nexu-io/open-design).
-- **Stripe:** an account that is not activated works in test mode.
-
-## 4. Prove it works
-
-In a new session, make one read-only call with each installed plugin (for example: list teams, list projects, look up docs). Report a table to the human: tool, the call you made, OK or the exact error. Anything that fails goes back to step 3.
+- **GitHub:** the app's GitHub connector signs in with OAuth. The plugin and the MCP server read `GITHUB_PERSONAL_ACCESS_TOKEN` from the environment instead. If the human uses the `gh` CLI, ask them to add `export GITHUB_PERSONAL_ACCESS_TOKEN="$(gh auth token)"` to their shell profile and restart the app.
+- **Google Workspace:** use the app's Gmail, Google Calendar and Google Drive connectors. If your app has none and you can run commands, install Google's CLI (`npm i -g @googleworkspace/cli`) and have the human run `gws auth login`.
+- **Supabase:** our Supabase projects are created through [Vercel's Supabase integration](https://vercel.com/marketplace/supabase). Sign in to the Supabase account those projects belong to.
+- **Open Design:** it runs on the human's machine. Ask the human to install the desktop app from [open-design.ai](https://open-design.ai) and keep it open. If you don't use the plugin, run `od mcp install <your agent>` (for example `claude`, `claude-desktop`, `codex` or `hermes`). If your app only accepts remote connectors, tell the human Open Design needs a desktop agent.

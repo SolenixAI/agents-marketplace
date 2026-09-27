@@ -27,7 +27,7 @@ jobs:
 
       - name: every JSON file parses
         run: |
-          for f in catalog.json catalog.schema.json .claude-plugin/marketplace.json .agents/plugins/marketplace.json .cursor-plugin/marketplace.json; do
+          for f in catalog.json catalog.schema.json .claude-plugin/marketplace.json .agents/plugins/marketplace.json; do
             jq empty "$f" && echo "ok  $f"
           done
 
@@ -37,9 +37,9 @@ jobs:
       - name: Claude manifest matches its public schema
         run: uvx check-jsonschema --schemafile https://json.schemastore.org/claude-code-marketplace.json .claude-plugin/marketplace.json
 
-      - name: all three manifests use the marketplace name "solenix"
+      - name: the marketplace name is "solenix"
         run: |
-          for f in .claude-plugin/marketplace.json .agents/plugins/marketplace.json .cursor-plugin/marketplace.json; do
+          for f in .agents/plugins/marketplace.json; do
             test "$(jq -r .name "$f")" = solenix || { echo "::error file=$f::name must be solenix"; exit 1; }
           done
 

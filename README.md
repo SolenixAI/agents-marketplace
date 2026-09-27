@@ -15,7 +15,6 @@ Each tool installs into your agent with **one line**, and one line removes it. N
 |---|---|---|
 | [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) | `/plugin marketplace add SolenixAI/agents-marketplace` | `/plugin marketplace remove solenix` |
 | [Codex](https://developers.openai.com/plugins/build/plugins) | `codex plugin marketplace add SolenixAI/agents-marketplace` | `codex plugin marketplace remove solenix` |
-| [Cursor](https://cursor.com/docs/plugins) | Add this repo as a plugin marketplace | Remove it from the same list |
 
 The Claude Code commands also work outside a session, as `claude plugin marketplace add|remove …`.
 
@@ -23,7 +22,7 @@ Using another MCP client? Each tool's entry lists the matching [`npx skills`](ht
 
 ## What's inside
 
-[`catalog.json`](catalog.json) is the single list of tools. Everything else reads from it: the plugin manifests for [Claude Code](.claude-plugin/marketplace.json), [Codex](.agents/plugins/marketplace.json) and [Cursor](.cursor-plugin/marketplace.json), and the page at [solenix.dev/agents](https://solenix.dev/agents).
+[`catalog.json`](catalog.json) is the single list of tools. Everything else reads from it: the marketplace file [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) (`.claude-plugin/marketplace.json` is a symlink to it) and the page at [solenix.dev/agents](https://solenix.dev/agents).
 
 Each entry follows [`catalog.schema.json`](catalog.schema.json):
 

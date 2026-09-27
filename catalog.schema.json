@@ -42,7 +42,8 @@
             "codex": { "type": "string" },
             "cursor": { "type": "string" },
             "skills": { "description": "npx skills add ...", "type": "string" },
-            "mcp": { "description": "npx add-mcp ...", "type": "string" }
+            "mcp": { "description": "npx add-mcp ...", "type": "string" },
+            "plugins": { "description": "npx plugins add ... (installs into every detected agent)", "type": "string" }
           }
         }
       }

@@ -1,0 +1,3 @@
+# MCP server endpoints in install commands. They answer only signed-in agents (401/405), so they aren't web pages to link-check.
+^https://mcp\.
+^https://api\.githubcopilot\.com/mcp/

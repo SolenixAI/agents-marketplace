@@ -27,12 +27,9 @@ jobs:
 
       - name: every JSON file parses
         run: |
-          for f in catalog.json catalog.schema.json .claude-plugin/marketplace.json .agents/plugins/marketplace.json; do
+          for f in .claude-plugin/marketplace.json .agents/plugins/marketplace.json; do
             jq empty "$f" && echo "ok  $f"
           done
-
-      - name: catalog.json matches catalog.schema.json
-        run: uvx check-jsonschema --schemafile catalog.schema.json catalog.json
 
       - name: Claude manifest matches its public schema
         run: uvx check-jsonschema --schemafile https://json.schemastore.org/claude-code-marketplace.json .claude-plugin/marketplace.json

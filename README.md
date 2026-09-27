@@ -18,31 +18,27 @@ Each tool installs into your agent with **one line**, and one line removes it. N
 
 The Claude Code commands also work outside a session, as `claude plugin marketplace add|remove …`.
 
-Using another MCP client? Each tool's entry lists the matching [`npx skills`](https://github.com/vercel-labs/skills) or [`npx add-mcp`](https://add-mcp.com/docs) line.
-
 ## What's inside
 
-[`catalog.json`](catalog.json) is the single list of tools. Everything else reads from it: the marketplace file [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) (`.claude-plugin/marketplace.json` is a symlink to it) and the page at [solenix.dev/agents](https://solenix.dev/agents).
+[`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) is the one list of tools, in the open [Agent Plugins](https://agent-plugins.org/specification) format. `.claude-plugin/marketplace.json` is a symlink to it, and [solenix.dev/agents](https://solenix.dev/agents) renders it.
 
-Each entry follows [`catalog.schema.json`](catalog.schema.json):
+Each entry points at a plugin that already exists, usually the vendor's own:
 
 ```json
 {
   "name": "example-tool",
-  "by": "curated",
-  "kind": "mcp",
-  "repo": "https://github.com/owner/example-tool",
   "description": "What it does, in one sentence.",
-  "license": "MIT",
-  "install": { "mcp": "npx add-mcp https://example.com/mcp" }
+  "source": { "source": "url", "url": "https://github.com/owner/example-plugin.git" },
+  "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+  "category": "Development"
 }
 ```
 
-`by` is `solenix` for tools we build and `curated` for other people's open-source tools we recommend.
+Use `"source": "git-subdir"` with a `path` when the plugin sits in a subfolder of the repo. Adding a tool means adding one entry.
 
 ## Suggest a tool
 
-Open an issue with the tool's name, repo, what it does, and why it's good. We only list open-source tools that install and uninstall cleanly.
+Open an issue with the tool's name, its plugin repo, what it does, and why it's good.
 
 ## License
 

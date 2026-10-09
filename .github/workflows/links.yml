@@ -26,9 +26,11 @@ jobs:
         with:
           # Links to this repo's own main branch are checked against the files in this change, so a
           # change that adds a file and links to it passes before it is merged.
+          # The action runs args through `eval` under `set -u`, so the capture reference must be
+          # escaped as \$1 or the shell fails with "$1: unbound variable" before lychee starts.
           args: >-
             --no-progress --max-retries 3
-            --remap "https://github.com/SolenixAI/agents-marketplace/blob/main/(.*) file://${{ github.workspace }}/$1"
-            --remap "https://raw.githubusercontent.com/SolenixAI/agents-marketplace/main/(.*) file://${{ github.workspace }}/$1"
+            --remap "https://github.com/SolenixAI/agents-marketplace/blob/main/(.*) file://${{ github.workspace }}/\$1"
+            --remap "https://raw.githubusercontent.com/SolenixAI/agents-marketplace/main/(.*) file://${{ github.workspace }}/\$1"
             "./**/*.md" "./**/*.json"
           fail: true

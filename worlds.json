@@ -28,7 +28,7 @@
       "id": "vercel",
       "name": "Vercel",
       "maker": "Vercel",
-      "for": "Put your website and apps online, keep them fast, and let your AI deploy and fix them for you.",
+      "for": "Put your website and apps online, keep them fast, and let your AI deploy and fix them for you. (live test)",
       "site": "https://vercel.com",
       "starsRepo": "vercel/vercel",
       "pieces": {

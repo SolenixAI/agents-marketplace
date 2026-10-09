@@ -24,5 +24,11 @@ jobs:
 
       - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
-          args: --no-progress --max-retries 3 "./**/*.md" "./**/*.json"
+          # Links to this repo's own main branch are checked against the files in this change, so a
+          # change that adds a file and links to it passes before it is merged.
+          args: >-
+            --no-progress --max-retries 3
+            --remap "https://github.com/SolenixAI/agents-marketplace/blob/main/(.*) file://${{ github.workspace }}/$1"
+            --remap "https://raw.githubusercontent.com/SolenixAI/agents-marketplace/main/(.*) file://${{ github.workspace }}/$1"
+            "./**/*.md" "./**/*.json"
           fail: true

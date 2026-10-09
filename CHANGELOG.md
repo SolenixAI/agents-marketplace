@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/SolenixAI/agents-marketplace/compare/v0.2.0...v0.3.0) (2026-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* worlds and the core toolkit, set up in any AI agent with one sentence
+
+### Features
+
+* worlds and the core toolkit, set up in any AI agent with one sentence ([5c775a5](https://github.com/SolenixAI/agents-marketplace/commit/5c775a5a31fd30739a2a5c3b11b7b1982d194e32))
+
 ## [0.2.0](https://github.com/SolenixAI/agents-marketplace/compare/v0.1.0...v0.2.0) (2026-09-27)
 
 

@@ -1,5 +1,28 @@
 {
-  "$comment": "The worlds Solenix stands behind. Each one is set up by its skill in skills/<id>/SKILL.md, installed with `npx skills add SolenixAI/agents-marketplace --skill <id>`. This file only names sources; solenix.dev/agents reads every number (stars, versions, skill lists) live from them. scripts/check.ts validates it.",
+  "$comment": "The Agents Marketplace, in two parts. toolkit: the tools every AI needs to succeed, set up together by skills/toolkit/SKILL.md. worlds: a tool's whole world, set up by skills/<id>/SKILL.md. Install any part with `npx skills add SolenixAI/agents-marketplace --skill <toolkit|id>`. This file names sources only; solenix.dev/agents reads every number (stars, versions, installs) live from them. scripts/check.ts validates it.",
+  "toolkit": {
+    "for": "The tools every AI needs to succeed. First: finding and installing the right skill for anything you ask.",
+    "tools": [
+      {
+        "id": "skills",
+        "name": "Skills",
+        "maker": "Vercel Labs",
+        "for": "Your AI finds and installs the right skill for anything you ask, from the open skills ecosystem.",
+        "site": "https://skills.sh",
+        "starsRepo": "vercel-labs/skills",
+        "install": {
+          "repo": "vercel-labs/skills",
+          "skills": [
+            "find-skills"
+          ]
+        },
+        "cli": {
+          "npm": "skills",
+          "docs": "https://skills.sh/docs"
+        }
+      }
+    ]
+  },
   "worlds": [
     {
       "id": "vercel",
@@ -9,11 +32,22 @@
       "site": "https://vercel.com",
       "starsRepo": "vercel/vercel",
       "pieces": {
-        "plugin": { "repo": "vercel/vercel-plugin" },
-        "skills": { "repo": "vercel/vercel-plugin" },
-        "mcp": { "registry": "com.vercel/vercel-mcp" },
-        "cli": { "npm": "vercel", "docs": "https://vercel.com/docs/cli" },
-        "api": { "docs": "https://vercel.com/docs/rest-api" }
+        "plugin": {
+          "repo": "vercel/vercel-plugin"
+        },
+        "skills": {
+          "repo": "vercel/vercel-plugin"
+        },
+        "mcp": {
+          "registry": "com.vercel/vercel-mcp"
+        },
+        "cli": {
+          "npm": "vercel",
+          "docs": "https://vercel.com/docs/cli"
+        },
+        "api": {
+          "docs": "https://vercel.com/docs/rest-api"
+        }
       }
     }
   ]

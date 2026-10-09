@@ -5,26 +5,34 @@
 
 The tools [Solenix](https://solenix.dev) stands behind, each set up in your AI in one copy-paste.
 
-Every tool here is a **world**: everything its makers built so AI can use it well (their skills, their connector, their command-line tool, their plugin). You don't need to know what any of those are. Paste one sentence into the AI you already use, and it sets up the whole world the way the makers intended, then shows you it works.
+It has two parts, and each sets up with one sentence pasted into the AI you already use (Claude, Codex, Cursor, Copilot, or any agent that can run a command). You don't need to know what a skill, connector or CLI is.
 
-## Set up a world
+## Core toolkit
 
-Paste this into your AI (Claude, Codex, Cursor, Copilot, or any agent that can run a command):
+The tools every AI needs to succeed.
+
+> Set up the Solenix core toolkit for me. Run `npx skills add SolenixAI/agents-marketplace --skill toolkit`, then follow the toolkit skill.
+
+| Tool | For | Made by |
+|---|---|---|
+| [Skills](https://skills.sh) | Your AI finds and installs the right skill for anything you ask, from the open skills ecosystem. | Vercel Labs |
+
+## Worlds
+
+A tool's whole world: everything its makers built so AI can use it well (their skills, connector, command-line tool, plugin), set up the way they intended, then proven to work.
 
 > Set up Vercel for me. Run `npx skills add SolenixAI/agents-marketplace --skill vercel`, then follow the vercel skill.
-
-The [skills](https://github.com/vercel-labs/skills) installer finds the agent it runs in and installs there. The world's skill then installs the makers' own package for your agent, signs you in and proves it works.
 
 | World | For | Made by |
 |---|---|---|
 | [Vercel](skills/vercel/SKILL.md) | Put your website and apps online, keep them fast, and let your AI deploy and fix them for you. | Vercel |
 
-Browse them on [solenix.dev/agents](https://solenix.dev/agents).
+The [skills](https://github.com/vercel-labs/skills) installer finds the agent it runs in and installs there. Browse everything on [solenix.dev/agents](https://solenix.dev/agents).
 
 ## How it works
 
-- [`worlds.json`](worlds.json) names each world and where its pieces live (the makers' repos, the [MCP registry](https://registry.modelcontextprotocol.io), npm). It names sources only; solenix.dev reads every number from them live.
-- `skills/<world>/SKILL.md` sets the world up. It follows the [Agent Skills](https://agentskills.io/specification) specification and points to the makers' own instructions instead of copying them, so it stays right when they change.
+- [`worlds.json`](worlds.json) lists the toolkit and the worlds, and where each piece lives (the makers' repos, the [MCP registry](https://registry.modelcontextprotocol.io), npm). It names sources only; solenix.dev reads every number from them live.
+- `skills/toolkit/SKILL.md` sets up every toolkit tool listed in `worlds.json`; `skills/<world>/SKILL.md` sets a world up. Each follows the [Agent Skills](https://agentskills.io/specification) specification and points to the makers' own instructions instead of copying them, so it stays right when they change.
 - [`scripts/check.ts`](scripts/check.ts) fails CI when a skill breaks the spec or a world has no skill; CI also checks that the `skills` installer finds every world, and that every link works.
 
 ## Suggest a world

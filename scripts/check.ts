@@ -6,6 +6,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs"
 
 type World = { id: string; name: string; maker: string; for: string; site: string; starsRepo: string; pieces: Record<string, Record<string, string>> }
+type Tool = { id: string; name: string; maker: string; for: string; site: string; starsRepo: string; install: { repo: string; skills: string[] } }
 
 const problems: string[] = []
 const bad = (msg: string) => problems.push(msg)
@@ -33,8 +34,22 @@ for (const dir of skills) {
   if (desc.length < 1 || desc.length > 1024) bad(`${file}: description must be 1-1024 chars (it has ${desc.length})`)
 }
 
-const { worlds } = JSON.parse(readFileSync("worlds.json", "utf8")) as { worlds: World[] }
+const { toolkit, worlds } = JSON.parse(readFileSync("worlds.json", "utf8")) as { toolkit?: { for: string; tools: Tool[] }; worlds: World[] }
 const seen = new Set<string>()
+// The core toolkit: set up together by skills/toolkit; each tool names the maker's skills to install.
+if (toolkit) {
+  seen.add("toolkit")
+  if (!skills.includes("toolkit")) bad("worlds.json has a toolkit but no skills/toolkit/SKILL.md to set it up")
+  if (!toolkit.for) bad("worlds.json: the toolkit has no for line")
+  const ids = new Set<string>()
+  for (const t of toolkit.tools) {
+    if (ids.has(t.id)) bad(`worlds.json: toolkit tool "${t.id}" is listed twice`)
+    ids.add(t.id)
+    for (const field of ["name", "maker", "for", "site", "starsRepo"] as const) if (!t[field]) bad(`worlds.json: toolkit tool "${t.id}" has no ${field}`)
+    if (!/^[\w.-]+\/[\w.-]+$/.test(t.install?.repo ?? "") || !t.install.skills?.length) bad(`worlds.json: toolkit tool "${t.id}" must name install.repo (owner/name) and at least one skill`)
+    if (!t.site.startsWith("https://")) bad(`worlds.json: toolkit tool "${t.id}" site is not https`)
+  }
+}
 for (const w of worlds) {
   if (seen.has(w.id)) bad(`worlds.json: "${w.id}" is listed twice`)
   seen.add(w.id)
@@ -46,4 +61,4 @@ for (const dir of skills) if (!seen.has(dir)) bad(`skills/${dir} is not a world 
 
 for (const p of problems) console.log(`check: ${p}`)
 if (problems.length) process.exit(1)
-console.log(`check: ${skills.length} world skill(s) follow the Agent Skills spec; worlds.json is consistent`)
+console.log(`check: ${skills.length} skill(s) follow the Agent Skills spec; worlds.json is consistent`)

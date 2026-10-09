@@ -1,0 +1,20 @@
+{
+  "$comment": "The worlds Solenix stands behind. Each one is set up by its skill in skills/<id>/SKILL.md, installed with `npx skills add SolenixAI/agents-marketplace --skill <id>`. This file only names sources; solenix.dev/agents reads every number (stars, versions, skill lists) live from them. scripts/check.ts validates it.",
+  "worlds": [
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "maker": "Vercel",
+      "for": "Put your website and apps online, keep them fast, and let your AI deploy and fix them for you.",
+      "site": "https://vercel.com",
+      "starsRepo": "vercel/vercel",
+      "pieces": {
+        "plugin": { "repo": "vercel/vercel-plugin" },
+        "skills": { "repo": "vercel/vercel-plugin" },
+        "mcp": { "registry": "com.vercel/vercel-mcp" },
+        "cli": { "npm": "vercel", "docs": "https://vercel.com/docs/cli" },
+        "api": { "docs": "https://vercel.com/docs/rest-api" }
+      }
+    }
+  ]
+}

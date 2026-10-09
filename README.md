@@ -5,7 +5,7 @@
 
 The tools [Solenix](https://solenix.dev) stands behind, each set up in your AI in one copy-paste.
 
-It has two parts, and each sets up with one sentence pasted into the AI you already use (Claude, Codex, Cursor, Copilot, or any agent that can run a command). You don't need to know what a skill, connector or CLI is.
+It has two parts, and each sets up with one sentence pasted into any AI agent. You don't need to know what a skill, connector or CLI is.
 
 ## Core toolkit
 

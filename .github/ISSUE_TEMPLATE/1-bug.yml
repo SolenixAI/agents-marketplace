@@ -6,7 +6,7 @@ body:
     id: agent
     attributes:
       label: Agent
-      options: [Claude Code, Codex, Cursor, Other MCP client]
+      options: [Claude Code, Codex, Cursor, Other AI agent]
     validations:
       required: true
   - type: input

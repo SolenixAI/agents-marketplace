@@ -2,7 +2,7 @@
 //   node scripts/check.ts
 // - Every skills/<name>/SKILL.md follows the Agent Skills specification (https://agentskills.io/specification):
 //   name 1-64 chars of a-z0-9 and single hyphens, equal to its folder; description 1-1024 chars.
-// - Every world in worlds.json has its skill, a unique id, and https links only.
+// - Every world in worlds.json has its skill, a unique id, and https links only; every spec link is https.
 import { existsSync, readdirSync, readFileSync } from "node:fs"
 
 type World = { id: string; name: string; maker: string; for: string; site: string; starsRepo: string; pieces: Record<string, Record<string, string>> }
@@ -34,7 +34,9 @@ for (const dir of skills) {
   if (desc.length < 1 || desc.length > 1024) bad(`${file}: description must be 1-1024 chars (it has ${desc.length})`)
 }
 
-const { toolkit, worlds } = JSON.parse(readFileSync("worlds.json", "utf8")) as { toolkit?: { for: string; tools: Tool[] }; worlds: World[] }
+const { toolkit, worlds, specs = {} } = JSON.parse(readFileSync("worlds.json", "utf8")) as { toolkit?: { for: string; tools: Tool[] }; worlds: World[]; specs?: Record<string, string> }
+// The open standards each kind of piece follows: one https link per kind.
+for (const [kind, url] of Object.entries(specs)) if (!["skills", "mcp", "plugin"].includes(kind) || !url.startsWith("https://")) bad(`worlds.json: spec "${kind}" must be skills, mcp or plugin, with an https link`)
 const seen = new Set<string>()
 // The core toolkit: set up together by skills/toolkit; each tool names the maker's skills to install.
 if (toolkit) {

@@ -1,5 +1,10 @@
 {
-  "$comment": "The Agents Marketplace, in two parts. toolkit: the tools every AI needs to succeed, set up together by skills/toolkit/SKILL.md. worlds: a tool's whole world, set up by skills/<id>/SKILL.md. Install any part with `npx skills add SolenixAI/agents-marketplace --skill <toolkit|id>`. This file names sources only; solenix.dev/agents reads every number (stars, versions, installs) live from them. scripts/check.ts validates it.",
+  "$comment": "The Agents Marketplace, in two parts. toolkit: the tools every AI needs to succeed, set up together by skills/toolkit/SKILL.md. worlds: a tool's whole world, set up by skills/<id>/SKILL.md. Install any part with `npx skills add SolenixAI/agents-marketplace --skill <toolkit|id>`. specs: the open standards each kind of piece follows. This file names sources only; solenix.dev/agents reads every number (stars, versions, installs) live from them. scripts/check.ts validates it.",
+  "specs": {
+    "skills": "https://agentskills.io/specification",
+    "mcp": "https://modelcontextprotocol.io/specification/latest",
+    "plugin": "https://github.com/agentplugins/agent-plugins-spec"
+  },
   "toolkit": {
     "for": "The tools every AI needs to succeed.",
     "tools": [
@@ -7,7 +12,7 @@
         "id": "skills",
         "name": "Skills",
         "maker": "Vercel Labs",
-        "for": "Your AI finds and installs the right skill for anything you ask, from the open skills ecosystem.",
+        "for": "Your AI finds and installs the right skill for anything you ask.",
         "site": "https://skills.sh",
         "starsRepo": "vercel-labs/skills",
         "install": {
@@ -28,7 +33,7 @@
       "id": "vercel",
       "name": "Vercel",
       "maker": "Vercel",
-      "for": "Put your website and apps online, keep them fast, and let your AI deploy and fix them for you.",
+      "for": "Put your website online. Your AI ships it and fixes it.",
       "site": "https://vercel.com",
       "starsRepo": "vercel/vercel",
       "pieces": {

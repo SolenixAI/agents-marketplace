@@ -1,18 +1,18 @@
-name: Suggest a tool
-description: Recommend an open-source agent tool for the marketplace.
-labels: [tool-suggestion]
+name: Suggest a world
+description: Recommend a tool whose makers ship what AI needs to use it well (skills, MCP, CLI, plugin).
+labels: [world-suggestion]
 body:
   - type: input
     id: name
     attributes:
-      label: Tool name
+      label: Tool
     validations:
       required: true
   - type: input
     id: repo
     attributes:
       label: Repo URL
-      placeholder: https://github.com/owner/tool
+      placeholder: https://github.com/owner/agent-plugin-or-skills
     validations:
       required: true
   - type: textarea

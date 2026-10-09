@@ -13,39 +13,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  manifests:
-    name: validate manifests
+  worlds:
+    name: worlds follow the specs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          enable-cache: false
+          node-version: 24
 
-      - name: every JSON file parses
+      - name: every world skill follows the Agent Skills spec; worlds.json is consistent
+        run: node scripts/check.ts
+
+      - name: the skills CLI finds every world skill
+        env:
+          DISABLE_TELEMETRY: "1"
         run: |
-          for f in .claude-plugin/marketplace.json .agents/plugins/marketplace.json; do
-            jq empty "$f" && echo "ok  $f"
-          done
-
-      - name: Claude manifest matches its public schema
-        run: uvx check-jsonschema --schemafile https://json.schemastore.org/claude-code-marketplace.json .claude-plugin/marketplace.json
-
-      - name: the marketplace name is "solenix"
-        run: |
-          for f in .agents/plugins/marketplace.json; do
-            test "$(jq -r .name "$f")" = solenix || { echo "::error file=$f::name must be solenix"; exit 1; }
-          done
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: 22
-
-      - name: claude plugin validate
-        run: npx --yes @anthropic-ai/claude-code@2.1.278 plugin validate .
+          out="$(npx -y skills@1.7.1 add . --list 2>&1)"
+          for d in skills/*/; do n="$(basename "$d")"; grep -q "$n" <<<"$out" || { echo "::error::npx skills does not find $n"; exit 1; }; done
 
   workflows:
     name: lint workflows

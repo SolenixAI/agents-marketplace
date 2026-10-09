@@ -3,49 +3,42 @@
 [![ci](https://github.com/SolenixAI/agents-marketplace/actions/workflows/ci.yml/badge.svg)](https://github.com/SolenixAI/agents-marketplace/actions/workflows/ci.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/SolenixAI/agents-marketplace/badge)](https://scorecard.dev/viewer/?uri=github.com/SolenixAI/agents-marketplace)
 
-Hand-picked tools for AI agents from [SolenixAI](https://solenix.dev): our own, plus the best of open source.
+The tools [Solenix](https://solenix.dev) stands behind, each set up in your AI in one copy-paste.
 
-Each tool installs into your agent with **one line**, and one line removes it. No installer, no background process, nothing left behind.
+It has two parts, and each sets up with one sentence pasted into any AI agent. You don't need to know what a skill, connector or CLI is.
 
-> **Status:** v0 — the marketplace works and is empty. The first tools are on the way.
+## Core toolkit
 
-## Add the marketplace
+The tools every AI needs to succeed.
 
-| Agent | Add | Remove |
+> Set up the Solenix core toolkit for me. Run `npx skills add SolenixAI/agents-marketplace --skill toolkit`, then follow the toolkit skill.
+
+| Tool | For | Made by |
 |---|---|---|
-| [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) | `/plugin marketplace add SolenixAI/agents-marketplace` | `/plugin marketplace remove solenix` |
-| [Codex](https://developers.openai.com/plugins/build/plugins) | `codex plugin marketplace add SolenixAI/agents-marketplace` | `codex plugin marketplace remove solenix` |
+| [Skills](https://skills.sh) | Your AI finds and installs the right skill for anything you ask, from the open skills ecosystem. | Vercel Labs |
 
-The Claude Code commands also work outside a session, as `claude plugin marketplace add|remove …`.
+## Worlds
 
-## What's inside
+A tool's whole world: everything its makers built so AI can use it well (their skills, connector, command-line tool, plugin), set up the way they intended, then proven to work.
 
-[`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) is the one list of tools, in the open [Agent Plugins](https://agent-plugins.org/specification) format. `.claude-plugin/marketplace.json` is a symlink to it, and [solenix.dev/agents](https://solenix.dev/agents) renders it.
+> Set up Vercel for me. Run `npx skills add SolenixAI/agents-marketplace --skill vercel`, then follow the vercel skill.
 
-Each entry points at a plugin that already exists, usually the vendor's own:
+| World | For | Made by |
+|---|---|---|
+| [Vercel](skills/vercel/SKILL.md) | Put your website and apps online, keep them fast, and let your AI deploy and fix them for you. | Vercel |
 
-```json
-{
-  "name": "example-tool",
-  "description": "What it does, in one sentence.",
-  "source": { "source": "url", "url": "https://github.com/owner/example-plugin.git" },
-  "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
-  "category": "Development"
-}
-```
+The [skills](https://github.com/vercel-labs/skills) installer finds the agent it runs in and installs there. Browse everything on [solenix.dev/agents](https://solenix.dev/agents).
 
-Use `"source": "git-subdir"` with a `path` when the plugin sits in a subfolder of the repo. Adding a tool means adding one entry.
+## How it works
 
-## Suggest a tool
+- [`worlds.json`](worlds.json) lists the toolkit and the worlds, and where each piece lives (the makers' repos, the [MCP registry](https://registry.modelcontextprotocol.io), npm). It names sources only; solenix.dev reads every number from them live.
+- `skills/toolkit/SKILL.md` sets up every toolkit tool listed in `worlds.json`; `skills/<world>/SKILL.md` sets a world up. Each follows the [Agent Skills](https://agentskills.io/specification) specification and points to the makers' own instructions instead of copying them, so it stays right when they change.
+- [`scripts/check.ts`](scripts/check.ts) fails CI when a skill breaks the spec or a world has no skill; CI also checks that the `skills` installer finds every world, and that every link works.
 
-Open an issue with the tool's name, its plugin repo, what it does, and why it's good.
+## Suggest a world
+
+A world qualifies when its makers ship what AI needs to use it well, and we would use it ourselves. [Suggest one](https://github.com/SolenixAI/agents-marketplace/issues/new?template=2-suggest-a-world.yml).
 
 ## License
 
-The code is open source under the [Apache License 2.0](LICENSE). Curated tools keep their own licenses.
-
-The SolenixAI name and logo are **not** covered by the license. Please don't use them to suggest your project is made or endorsed by SolenixAI.
-
-## Contributing
-
-See the [contributing guide](https://github.com/SolenixAI/.github/blob/main/CONTRIBUTING.md). Report security problems privately: see the [security policy](https://github.com/SolenixAI/.github/blob/main/SECURITY.md).
+[Apache-2.0](LICENSE)

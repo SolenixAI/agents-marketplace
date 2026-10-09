@@ -33,7 +33,7 @@
       "id": "vercel",
       "name": "Vercel",
       "maker": "Vercel",
-      "for": "Put your website online. Your AI ships it and fixes it. Live test.",
+      "for": "Put your website online. Your AI ships it and fixes it.",
       "site": "https://vercel.com",
       "starsRepo": "vercel/vercel",
       "pieces": {

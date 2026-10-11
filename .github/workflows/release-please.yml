@@ -15,7 +15,7 @@ jobs:
     name: release PR and GitHub Release
     runs-on: ubuntu-latest
     permissions:
-      contents: write # tag and publish releases, update CHANGELOG
+      contents: write # tag and publish releases, update CHANGELOG, merge main into the release branch
       pull-requests: write # open and update the release PR
       actions: write # dispatch the gated checks on the release PR
     steps:
@@ -24,18 +24,37 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-      - name: dispatch the gated checks on the open release PR
+      - name: refresh the open release PR from main, then dispatch its checks
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          # A push made with GITHUB_TOKEN starts no pull_request run, so the release PR's required checks
-          # never report. Dispatch them on its branch; workflow_dispatch works on any branch.
           # Same-repository branches only: a fork PR can reuse the name. gh lists 30 PRs by default, so ask for 1000.
-          gh pr list --state open --limit 1000 --json headRefName,isCrossRepository \
-            --jq '.[] | select(.isCrossRepository | not) | select(.headRefName | startswith("release-please--")) | .headRefName' \
-            | while read -r branch; do
+          gh pr list --state open --limit 1000 --json number,headRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not) | select(.headRefName | startswith("release-please--")) | "\(.number) \(.headRefName)"' \
+            | while read -r number branch; do
+                # release-please leaves a release PR alone while its content is unchanged, so the PR can stay on an
+                # old main. Merge main into it. Update branch is asynchronous: wait until the head moves.
+                head="$(gh pr view "$number" --json headRefOid --jq .headRefOid)"
+                behind="$(gh api "repos/$GH_REPO/compare/main...$head" --jq .behind_by)"
+                if [ "$behind" -gt 0 ]; then
+                  gh api -X PUT "repos/$GH_REPO/pulls/$number/update-branch" -f expected_head_sha="$head"
+                  moved=""
+                  for _ in $(seq 1 24); do
+                    sleep 5
+                    if [ "$(gh pr view "$number" --json headRefOid --jq .headRefOid)" != "$head" ]; then
+                      moved=1
+                      break
+                    fi
+                  done
+                  if [ -z "$moved" ]; then
+                    echo "::error::the update of release PR #$number did not land within 2 minutes"
+                    exit 1
+                  fi
+                fi
+                # A push made with GITHUB_TOKEN starts no pull_request run, so the required checks never report.
+                # Dispatch them on the branch, which now holds the refreshed head.
                 for workflow in ci.yml links.yml pr-title.yml; do
                   gh workflow run "$workflow" --ref "$branch"
                 done

@@ -17,8 +17,24 @@ jobs:
     permissions:
       contents: write # tag and publish releases, update CHANGELOG
       pull-requests: write # open and update the release PR
+      actions: write # dispatch the gated checks on the release PR
     steps:
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - name: dispatch the gated checks on the open release PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # A push made with GITHUB_TOKEN starts no pull_request run, so the release PR's required checks
+          # never report. Dispatch them on its branch; workflow_dispatch works on any branch.
+          gh pr list --state open --json headRefName --jq '.[] | select(.headRefName | startswith("release-please--")) | .headRefName' \
+            | while read -r branch; do
+                for workflow in ci.yml links.yml pr-title.yml; do
+                  gh workflow run "$workflow" --ref "$branch"
+                done
+              done

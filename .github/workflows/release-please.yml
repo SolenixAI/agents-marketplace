@@ -32,7 +32,9 @@ jobs:
           set -euo pipefail
           # A push made with GITHUB_TOKEN starts no pull_request run, so the release PR's required checks
           # never report. Dispatch them on its branch; workflow_dispatch works on any branch.
-          gh pr list --state open --json headRefName --jq '.[] | select(.headRefName | startswith("release-please--")) | .headRefName' \
+          # Same-repository branches only: a fork PR can reuse the name. gh lists 30 PRs by default, so ask for 1000.
+          gh pr list --state open --limit 1000 --json headRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not) | select(.headRefName | startswith("release-please--")) | .headRefName' \
             | while read -r branch; do
                 for workflow in ci.yml links.yml pr-title.yml; do
                   gh workflow run "$workflow" --ref "$branch"

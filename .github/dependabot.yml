@@ -22,3 +22,7 @@ updates:
     groups:
       npm:
         patterns: ["*"]
+    ignore:
+      # @types/node must stay on the Node 24 major: the runtime, engines and CI are all Node 24.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]

@@ -1,3 +1,7 @@
 # MCP server endpoints in install commands. They answer only signed-in agents (401/405), so they aren't web pages to link-check.
 ^https://mcp\.
 ^https://api\.githubcopilot\.com/mcp/
+# The release PR's CHANGELOG.md links the compare view of the release being prepared (v0.2.0...v0.3.0).
+# That tag is created only when the release is published, so this link returns 404 until then.
+# Exclude only that compare view. Remove this line once v0.3.0 is published; a later release PR needs its own line.
+^https://github\.com/SolenixAI/agents-marketplace/compare/v0\.2\.0\.\.\.v0\.3\.0$

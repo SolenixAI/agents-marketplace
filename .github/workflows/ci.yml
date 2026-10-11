@@ -26,6 +26,12 @@ jobs:
         with:
           node-version: 24
 
+      - name: install the locked dependencies
+        run: npm ci
+
+      - name: typecheck the TypeScript with the strict tsconfig
+        run: npm run typecheck
+
       - name: every world skill follows the Agent Skills spec; worlds.json is consistent
         run: node scripts/check.ts
 

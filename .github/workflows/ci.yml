@@ -4,7 +4,6 @@ on:
   pull_request:
   push:
     branches: [main]
-  workflow_dispatch: # run by hand on a branch whose pull_request run is missing (bot and release PRs)
 
 permissions:
   contents: read # checkout only

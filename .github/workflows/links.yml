@@ -4,7 +4,6 @@ on:
   pull_request:
   schedule:
     - cron: "0 7 * * 1"
-  workflow_dispatch:
 
 permissions:
   contents: read # checkout only
@@ -26,7 +25,7 @@ jobs:
       # tag exists only once the release is published, so the link returns 404 until then. Exclude only that
       # compare view, read from the release branch's manifest, so each release needs no edit here.
       - name: Exclude the compare view of the release being prepared
-        if: startsWith(github.head_ref || github.ref_name, 'release-please--')
+        if: startsWith(github.head_ref || github.ref_name, 'release-please--') && !github.event.pull_request.head.repo.fork
         shell: bash
         run: |
           set -euo pipefail

@@ -4,7 +4,6 @@ on:
   pull_request:
   schedule:
     - cron: "0 7 * * 1"
-  workflow_dispatch:
 
 permissions:
   contents: read # checkout only
@@ -21,6 +20,18 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+
+      # The release PR's CHANGELOG.md links the compare view of the release it prepares (vPREVIOUS...vNEXT). That
+      # tag exists only once the release is published, so the link returns 404 until then. Exclude only that
+      # compare view, read from the release branch's manifest, so each release needs no edit here.
+      - name: Exclude the compare view of the release being prepared
+        if: startsWith(github.head_ref || github.ref_name, 'release-please--') && !github.event.pull_request.head.repo.fork
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(jq -r '."."' .release-please-manifest.json)"
+          escaped="$(printf '%s' "$version" | sed 's/\./\\./g')"
+          printf '%s\n' "^https://github\.com/SolenixAI/agents-marketplace/compare/v[0-9.]+\.\.\.v${escaped}\$" >> .lycheeignore
 
       - uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:

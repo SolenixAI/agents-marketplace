@@ -14,10 +14,10 @@ jobs:
   release-please:
     name: release PR and GitHub Release
     runs-on: ubuntu-latest
-    # release-please runs with GITHUB_TOKEN, so it needs no stored key. A PR it opens or updates starts no
-    # pull_request run, so the release PR's required checks wait. Whoever ships the release starts them as a person:
-    # reopening the release PR (gh pr close N && gh pr reopen N) runs every required check on its head, and the merge
-    # box counts them. Checks started from a workflow do not count.
+    # release-please runs with GITHUB_TOKEN, so it needs no stored key. GitHub holds the pull_request runs of a PR it
+    # opens or updates for approval (docs.github.com/actions/concepts/security/github_token). Whoever ships the release
+    # starts them: "Approve workflows to run" in the merge box, or gh pr close N && gh pr reopen N. The merge box counts
+    # those runs. Checks dispatched from a workflow do not count.
     permissions:
       contents: write # tag and publish releases, update CHANGELOG
       issues: write # release labels

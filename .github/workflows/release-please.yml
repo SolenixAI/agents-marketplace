@@ -14,8 +14,8 @@ jobs:
   release-please:
     name: release PR and GitHub Release
     runs-on: ubuntu-latest
-    # No GITHUB_TOKEN permissions. release-please acts only with the solenix-hq app token. A PR opened with
-    # GITHUB_TOKEN waits for approval before its pull_request checks run, so its required checks stay expected.
+    # No GITHUB_TOKEN permissions. Every write uses the solenix-hq app token. A push or PR made with GITHUB_TOKEN starts
+    # no pull_request run, so the required checks would never report on the release PR.
     permissions: {}
     steps:
       - name: Mint the solenix-hq app token, scoped to this repository
@@ -35,3 +35,35 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+      - name: refresh the open release PR from main
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # Same-repository branches only: a fork PR can reuse the name. gh lists 30 PRs by default, so ask for 1000.
+          gh pr list --state open --limit 1000 --json number,headRefName,isCrossRepository \
+            --jq '.[] | select(.isCrossRepository | not) | select(.headRefName | startswith("release-please--")) | .number' \
+            | while read -r number; do
+                # release-please leaves a release PR alone while its content is unchanged, so the PR can stay on an
+                # old main. Merge main into it with the app token: the app's push starts the pull_request runs that
+                # report the required checks. Update branch is asynchronous: wait until the head moves.
+                head="$(gh pr view "$number" --json headRefOid --jq .headRefOid)"
+                behind="$(gh api "repos/$GH_REPO/compare/main...$head" --jq .behind_by)"
+                if [ "$behind" -gt 0 ]; then
+                  gh api -X PUT "repos/$GH_REPO/pulls/$number/update-branch" -f expected_head_sha="$head"
+                  moved=""
+                  for _ in $(seq 1 24); do
+                    sleep 5
+                    if [ "$(gh pr view "$number" --json headRefOid --jq .headRefOid)" != "$head" ]; then
+                      moved=1
+                      break
+                    fi
+                  done
+                  if [ -z "$moved" ]; then
+                    echo "::error::the update of release PR #$number did not land within 2 minutes"
+                    exit 1
+                  fi
+                fi
+              done
